@@ -1,56 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using ConcratPazzles;
+using System.Collections.Generic;
 class Program
 {
-    static public string ConcatPuzzles( int currentIndex, List<string> puzzles, Dictionary<string, List<int>> note, bool[] visited)
-    {
-        visited[currentIndex] = true;
-
-        string currentPuzzle = puzzles[currentIndex];
-        string nextKey = currentPuzzle[4..6]; 
-        
-        string maxResult = "";
-
-        if (note.ContainsKey(nextKey))
-        {
-            foreach (int index in note[nextKey])
-            {
-                if (!visited[index])
-                {
-                    string currentResult = ConcatPuzzles(index, puzzles, note, visited);
-                    
-                    if (currentResult.Length > maxResult.Length)
-                        maxResult = currentResult;
-                }
-            }
-        }
-        visited[currentIndex] = false;
-
-        if (string.IsNullOrEmpty(maxResult))
-            return currentPuzzle;
-        else
-            return currentPuzzle + maxResult[2..];
-    }
     static void Main(string[] args)
     {
-        List<string> puzzles = new List<string>(){ "608017", "248460", "962282", "994725", "177092"};
-        Dictionary<string, List<int>> note = new Dictionary<string, List<int>>();
-        for(int i = 0; i < puzzles.Count; i++)
-        {
-            if (!note.ContainsKey(puzzles[i][0..2]))
-            {
-                note.Add(puzzles[i][0..2], new List<int>());
-            }
-            note[puzzles[i][0..2]].Add(i);
-        }
-        string maxLenghtPazzle = "";
-        bool[] visited = new bool[puzzles.Count];
-
-        for(int i = 0; i < puzzles.Count; i++)
-        {
-            string currentLenghtPazzle = ConcatPuzzles(i, puzzles, note, visited);
-            if(currentLenghtPazzle.Length > maxLenghtPazzle.Length)
-                maxLenghtPazzle = currentLenghtPazzle;
-        }
+        var puzzles = File.ReadAllLines("source.txt").ToList();
+        var maxLenghtPazzle = PuzzleSubstruct.FindNumber(puzzles);
         Console.WriteLine(maxLenghtPazzle);
     }
 }
